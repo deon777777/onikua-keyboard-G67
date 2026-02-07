@@ -2,183 +2,183 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>ONIKUA G67 PRO - GOD MODE</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>ONIKUA G67 - NEON OVERRIDE</title>
     
     <script defer src="https://onikua.driveall.cn/static/js/chunk-vendors.564e9835.js"></script>
     <script defer src="https://onikua.driveall.cn/static/js/app.99da8688.js"></script>
     <link href="https://onikua.driveall.cn/static/css/app.64dc58ad.css" rel="stylesheet">
 
     <style>
+        /* --- CORE DESIGN SYSTEM --- */
         :root {
-            --neon: #bc13fe;
-            --cyber: #00ffff;
-            --bg: #050505;
+            --neon-purple: #bc13fe;
+            --cyber-blue: #00ffff;
+            --dark-space: #050505;
+            --glass: rgba(20, 20, 35, 0.7);
         }
 
         body {
-            background-color: var(--bg);
-            color: white;
-            font-family: 'Orbitron', sans-serif;
-            margin: 0;
+            background-color: var(--dark-space) !important;
+            background-image: 
+                radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(188, 19, 254, 0.15) 0%, transparent 50%),
+                linear-gradient(to bottom, #050505, #120520) !important;
+            color: #fff !important;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
             overflow: hidden;
-            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), #1a0b2e 0%, #050505 100%);
             height: 100vh;
-            transition: filter 0.1s ease;
         }
 
-        /* HEADER E PULSANTI */
-        .header {
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--neon);
-            background: rgba(0,0,0,0.9);
-            box-shadow: 0 0 30px var(--neon);
-            z-index: 10000;
-            position: relative;
+        /* --- OVERRIDE TOTALE ONIKUA (Element UI) --- */
+        #app, .home, .device, .left-device, .device-right, .el-container {
+            background: transparent !important;
+            color: white !important;
         }
 
-        .btn-cyber {
-            padding: 12px 20px;
-            background: transparent;
-            color: var(--cyber);
-            border: 2px solid var(--cyber);
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            text-transform: uppercase;
-            box-shadow: 0 0 10px var(--cyber);
-            transition: 0.3s;
-        }
-
-        .btn-cyber:hover {
-            background: var(--cyber);
-            color: black;
-            box-shadow: 0 0 25px var(--cyber);
-        }
-
-        /* PANNELLO TRASPARENTE PER L'APP */
-        #app {
-            background: rgba(15, 15, 25, 0.4) !important;
+        /* Sidebar sinistra futuristica */
+        .left-device {
+            background: var(--glass) !important;
             backdrop-filter: blur(15px);
-            border: 1px solid rgba(188, 19, 254, 0.2);
-            margin: 20px;
-            height: 80vh;
-            border-radius: 15px;
-            overflow-y: auto;
-            display: block !important;
+            border-right: 2px solid var(--neon-purple) !important;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
         }
 
-        /* AUDIO VISUALIZER (Bordi che pulsano) */
-        .visualizer-glow {
+        .device-info { border-bottom: 1px solid var(--neon-purple) !important; }
+        .device-name { color: var(--cyber-blue) !important; text-shadow: 0 0 10px var(--cyber-blue); }
+
+        /* Menu items animati */
+        .function-item {
+            border-radius: 0 20px 20px 0 !important;
+            margin: 5px 0 !important;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        }
+
+        .function-item.active {
+            background: linear-gradient(90deg, var(--neon-purple), transparent) !important;
+            border-left: 4px solid var(--cyber-blue) !important;
+            box-shadow: 0 0 20px rgba(188, 19, 254, 0.4);
+        }
+
+        .function-item:hover:not(.active) {
+            background: rgba(0, 255, 255, 0.1) !important;
+            padding-left: 25px !important;
+        }
+
+        /* La Tastiera Virtuale */
+        .keyboard {
+            background: rgba(0, 0, 0, 0.4) !important;
+            border: 1px solid var(--neon-purple) !important;
+            padding: 20px !important;
+            border-radius: 15px !important;
+            box-shadow: 0 0 40px rgba(188, 19, 254, 0.2);
+        }
+
+        .keyboard-item {
+            background: #1a1a1a !important;
+            border: 1px solid #333 !important;
+            border-radius: 4px !important;
+            transition: all 0.2s !important;
+        }
+
+        .keyboard-item:hover {
+            border-color: var(--cyber-blue) !important;
+            box-shadow: 0 0 15px var(--cyber-blue);
+            transform: translateY(-2px);
+        }
+
+        .keyboard-item span { color: #eee !important; }
+
+        /* Tabs e Pannelli Destri */
+        .el-tabs__item { color: #aaa !important; }
+        .el-tabs__item.is-active { color: var(--cyber-blue) !important; text-shadow: 0 0 8px var(--cyber-blue); }
+        .el-tabs__active-bar { background-color: var(--cyber-blue) !important; }
+
+        .device-right-funciton-character-col-list-item {
+            background: rgba(255,255,255,0.05) !important;
+            border: 1px solid rgba(0, 255, 255, 0.2) !important;
+            color: white !important;
+            border-radius: 8px !important;
+        }
+
+        .device-right-funciton-character-col-list-item:hover {
+            background: var(--neon-purple) !important;
+            border-color: white !important;
+        }
+
+        /* --- EFFETTI SPECIALI --- */
+        .cyber-grid {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(188, 19, 254, 0.05) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(188, 19, 254, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
             pointer-events: none;
-            box-shadow: inset 0 0 0px var(--neon);
-            z-index: 9999;
-            transition: box-shadow 0.05s ease;
+            z-index: -1;
         }
 
-        /* PARTICELLE */
         .particle {
             position: fixed;
-            width: 3px; height: 3px;
-            background: var(--cyber);
-            border-radius: 50%;
+            width: 2px; height: 2px;
+            background: var(--cyber-blue);
             pointer-events: none;
-            z-index: 10001;
+            z-index: 10000;
         }
 
-        /* PULIZIA INTERFACCIA ORIGINALE */
-        .el-main, .el-container { background: transparent !important; }
-        .el-aside { border-right: 1px solid var(--neon) !important; }
+        /* Pulsanti di salvataggio */
+        .drawer-content-top-right-btn {
+            background: linear-gradient(45deg, var(--neon-purple), #8a00cc) !important;
+            border: none !important;
+            border-radius: 5px !important;
+            font-weight: bold !important;
+            box-shadow: 0 0 15px var(--neon-purple) !important;
+        }
     </style>
 </head>
-<body onclick="initAudio()">
+<body>
 
-<div class="visualizer-glow" id="glow"></div>
+    <div class="cyber-grid"></div>
+    
+    <div id="app"></div>
 
-<div class="header">
-    <h1>ONIKUA <span style="color:var(--cyber)">G67 PRO</span> <small style="font-size:10px; color:var(--neon)">GOD MODE</small></h1>
-    <div>
-        <button class="btn-cyber" onclick="connectHID()">🔌 COLLEGA USB</button>
-        <button class="btn-cyber" style="border-color:var(--neon); color:var(--neon); margin-left:10px;" onclick="location.reload()">🔄 REFRESH</button>
-    </div>
-</div>
+    <script>
+        // 1. EFFETTO TRACCIAMENTO MOUSE PER LO SFONDO
+        window.addEventListener('mousemove', e => {
+            document.body.style.setProperty('--x', e.clientX + 'px');
+            document.body.style.setProperty('--y', e.clientY + 'px');
+            createParticle(e.clientX, e.clientY);
+        });
 
-<div id="app">
-    <div id="status" style="text-align:center; padding-top:100px;">
-        <h2 style="color:var(--cyber)">SISTEMA IN ATTESA</h2>
-        <p>Muovi il mouse per le particelle. Clicca ovunque per attivare la reattività audio.</p>
-    </div>
-</div>
-
-<script>
-    // 1. CONNESSIONE USB
-    async function connectHID() {
-        try {
-            await navigator.hid.requestDevice({ filters: [] });
-            document.getElementById('status').style.display = 'none';
-        } catch (e) { console.log("Connessione annullata"); }
-    }
-
-    // 2. AUDIO REATTIVO (Pulsazione bordi e colori)
-    let audioCtx, analyser, dataArray;
-    async function initAudio() {
-        if (audioCtx) return;
-        try {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            const source = audioCtx.createMediaStreamSource(stream);
-            analyser = audioCtx.createAnalyser();
-            analyser.fftSize = 64;
-            source.connect(analyser);
-            dataArray = new Uint8Array(analyser.frequencyBinCount);
-            updateVisuals();
-        } catch (err) { console.log("Microfono non autorizzato"); }
-    }
-
-    function updateVisuals() {
-        requestAnimationFrame(updateVisuals);
-        analyser.getByteFrequencyData(dataArray);
-        let volume = dataArray.reduce((a, b) => a + b) / dataArray.length;
-        
-        // Fa pulsare l'ombra interna
-        document.getElementById('glow').style.boxShadow = `inset 0 0 ${volume * 1.5}px var(--neon)`;
-        // Cambia leggermente la tonalità in base al volume
-        document.body.style.filter = `hue-rotate(${volume/4}deg)`;
-    }
-
-    // 3. MOVIMENTO MOUSE E PARTICELLE
-    window.addEventListener('mousemove', e => {
-        let x = (e.clientX / window.innerWidth) * 100;
-        let y = (e.clientY / window.innerHeight) * 100;
-        document.body.style.setProperty('--x', x + '%');
-        document.body.style.setProperty('--y', y + '%');
-        
-        createParticle(e.clientX, e.clientY);
-    });
-
-    function createParticle(x, y) {
-        const p = document.createElement('div');
-        p.className = 'particle';
-        p.style.left = x + 'px'; p.style.top = y + 'px';
-        document.body.appendChild(p);
-        
-        p.animate([
-            { transform: 'scale(1)', opacity: 1 },
-            { transform: `translate(${(Math.random()-0.5)*100}px, 50px) scale(0)`, opacity: 0 }
-        ], { duration: 1000 }).onfinish = () => p.remove();
-    }
-
-    // Auto-rimozione messaggio se Onikua carica
-    setInterval(() => {
-        if (document.querySelector('.el-container')) {
-            document.getElementById('status').style.display = 'none';
+        function createParticle(x, y) {
+            if (Math.random() > 0.1) return;
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.style.left = x + 'px';
+            p.style.top = y + 'px';
+            document.body.appendChild(p);
+            
+            p.animate([
+                { transform: 'translateY(0) scale(1)', opacity: 1 },
+                { transform: 'translateY(-100px) scale(0)', opacity: 0 }
+            ], { duration: 1500 }).onfinish = () => p.remove();
         }
-    }, 1000);
-</script>
 
+        // 2. CORREZIONE AUTOMATICA DEI COLORI DINAMICI
+        // Questo script gira ogni 500ms per "cacciar via" il bianco se Onikua prova a rimetterlo
+        setInterval(() => {
+            document.querySelectorAll('.el-main, .el-card, .el-tabs__content, .device-right-funciton-box').forEach(el => {
+                el.style.backgroundColor = 'transparent';
+                el.style.color = 'white';
+            });
+            
+            // Fix per i testi dei caratteri
+            document.querySelectorAll('.color-333').forEach(el => {
+                el.classList.remove('color-333');
+                el.style.color = '#fff';
+            });
+        }, 500);
+
+        // 3. MESSAGGIO DI BENVENUTO IN CONSOLE
+        console.log("%c ONIKUA G67 NEON OVERRIDE ATTIVO ", "background: #bc13fe; color: white; font-size: 20px; font-weight: bold;");
+    </script>
 </body>
 </html>
