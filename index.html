@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>ONIKUA G67 PRO - Ultimate Edition</title>
+    
     <script defer src="https://onikua.driveall.cn/static/js/chunk-vendors.564e9835.js"></script>
     <script defer src="https://onikua.driveall.cn/static/js/app.99da8688.js"></script>
     <link href="https://onikua.driveall.cn/static/css/app.64dc58ad.css" rel="stylesheet">
@@ -20,86 +21,103 @@
             font-family: 'Segoe UI', sans-serif;
             margin: 0;
             overflow: hidden;
-            /* Sfondo Live Animato */
+            /* Sfondo Live con sfumatura dinamica */
             background: radial-gradient(circle at center, #1a0b2e 0%, #050505 100%);
         }
 
-        /* Effetto Nebula in movimento */
+        /* Effetto Stelle in movimento */
         body::before {
             content: "";
             position: fixed;
             top: -50%; left: -50%; width: 200%; height: 200%;
             background: transparent url('https://www.transparenttextures.com/patterns/stardust.png') repeat;
-            animation: move-bg 120s linear infinite;
-            opacity: 0.3;
+            animation: move-bg 100s linear infinite;
+            opacity: 0.4;
             z-index: -1;
         }
-          <button onclick="navigator.hid.requestDevice({filters:[]})" style="padding:20px; background:#bc13fe; color:white; border-radius:10px; cursor:pointer; position:fixed; z-index:9999; top:20px; left:20px;">
-           CLICCA QUI PER CONNETTERE LA TASTIERA
-          </button>
+
         @keyframes move-bg {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
 
         .header {
-            padding: 20px;
+            padding: 15px 30px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
             border-bottom: 2px solid var(--neon);
-            box-shadow: 0 0 20px rgba(188, 19, 254, 0.4);
+            background: rgba(0,0,0,0.8);
+            box-shadow: 0 0 20px rgba(188, 19, 254, 0.5);
         }
 
-        /* Pannello Principale Glassmorphism */
+        /* Pulsante di Connessione USB */
+        #connect-btn {
+            padding: 12px 25px;
+            background: var(--cyber);
+            color: black;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--cyber);
+            transition: 0.3s;
+        }
+
+        #connect-btn:hover {
+            transform: scale(1.1);
+            filter: brightness(1.2);
+        }
+
+        /* Contenitore App Trasparente */
         #app {
-            background: rgba(15, 15, 25, 0.7) !important;
-            backdrop-filter: blur(15px);
+            background: rgba(15, 15, 25, 0.6) !important;
+            backdrop-filter: blur(10px);
             border-radius: 20px;
-            border: 1px solid rgba(188, 19, 254, 0.2);
             margin: 20px;
-            height: 85vh;
+            height: 80vh;
+            border: 1px solid rgba(188, 19, 254, 0.3);
             overflow-y: auto;
         }
 
-        /* Rendiamo i tasti della tastiera fluorescenti */
-        .key-item {
-            border: 1px solid var(--cyber) !important;
-            background: rgba(0, 255, 255, 0.1) !important;
-            transition: 0.3s !important;
-        }
-
-        .key-item:hover {
-            box-shadow: 0 0 15px var(--cyber) !important;
-            transform: scale(1.05);
-        }
+        /* Testi più belli */
+        h1 { text-shadow: 0 0 10px var(--neon); font-size: 22px; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1 style="margin:0; font-size: 24px; text-shadow: 0 0 10px var(--neon);">
-        ONIKUA <span style="color:var(--cyber)">G67 PRO</span>
-    </h1>
-    <div id="status">🔵 SISTEMA ONLINE</div>
+    <h1>ONIKUA <span style="color:var(--cyber)">G67 PRO</span></h1>
+    <button id="connect-btn">🔌 CONNETTI TASTIERA</button>
 </div>
 
 <div id="app">
-    <div style="display:flex; justify-content:center; align-items:center; height:100%; flex-direction:column;">
-        <div class="loader"></div>
-        <p style="color:var(--cyber); font-weight:bold;">SINCRONIZZAZIONE HARDWARE...</p>
+    <div style="text-align:center; padding-top:200px;">
+        <h2 style="color:var(--cyber)">SISTEMA PRONTO</h2>
+        <p>Clicca il tasto in alto per sincronizzare la tua G67 via USB</p>
     </div>
 </div>
 
 <script>
-    // Funzione "Innovativa": Messaggi di sistema dinamici
-    const statusDiv = document.getElementById('status');
-    const messages = ["SINCRONIZZAZIONE...", "ANALISI LED...", "G67 RILEVATA", "PRONTO"];
-    let i = 0;
-    setInterval(() => {
-        if(i < messages.length) statusDiv.innerText = "📡 " + messages[i++];
-    }, 2000);
+    // Funzione per attivare il popup di connessione USB (WebHID)
+    document.getElementById('connect-btn').onclick = async () => {
+        try {
+            const devices = await navigator.hid.requestDevice({ filters: [] });
+            if (devices.length > 0) {
+                console.log("Dispositivo connesso!");
+            }
+        } catch (error) {
+            console.log("Connessione annullata.");
+        }
+    };
+
+    // Effetto "Sfondo che segue il mouse"
+    window.addEventListener('mousemove', e => {
+        let x = (e.clientX / window.innerWidth) * 100;
+        let y = (e.clientY / window.innerHeight) * 100;
+        document.body.style.background = `radial-gradient(circle at ${x}% ${y}%, #1a0b2e 0%, #050505 100%)`;
+    });
 </script>
 
 </body>
-
 </html>
