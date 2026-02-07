@@ -2,6 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ONIKUA G67 PRO - Ultimate Edition</title>
     
     <script defer src="https://onikua.driveall.cn/static/js/chunk-vendors.564e9835.js"></script>
@@ -20,27 +21,13 @@
             color: white;
             font-family: 'Segoe UI', sans-serif;
             margin: 0;
-            overflow: hidden;
-            /* Sfondo Live con sfumatura dinamica */
-            background: radial-gradient(circle at center, #1a0b2e 0%, #050505 100%);
+            overflow-x: hidden;
+            /* Sfondo Live che reagisce al mouse */
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), #1a0b2e 0%, #050505 100%);
+            min-height: 100vh;
         }
 
-        /* Effetto Stelle in movimento */
-        body::before {
-            content: "";
-            position: fixed;
-            top: -50%; left: -50%; width: 200%; height: 200%;
-            background: transparent url('https://www.transparenttextures.com/patterns/stardust.png') repeat;
-            animation: move-bg 100s linear infinite;
-            opacity: 0.4;
-            z-index: -1;
-        }
-
-        @keyframes move-bg {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
+        /* HEADER CYBERPUNK */
         .header {
             padding: 15px 30px;
             display: flex;
@@ -49,9 +36,11 @@
             border-bottom: 2px solid var(--neon);
             background: rgba(0,0,0,0.8);
             box-shadow: 0 0 20px rgba(188, 19, 254, 0.5);
+            position: sticky;
+            top: 0;
+            z-index: 9999;
         }
 
-        /* Pulsante di Connessione USB */
         #connect-btn {
             padding: 12px 25px;
             background: var(--cyber);
@@ -69,54 +58,103 @@
             filter: brightness(1.2);
         }
 
-        /* Contenitore App Trasparente */
+        /* CONTENITORE APP (Forza la visibilità dei menu Onikua) */
         #app {
             background: rgba(15, 15, 25, 0.6) !important;
             backdrop-filter: blur(10px);
             border-radius: 20px;
             margin: 20px;
-            height: 80vh;
+            min-height: 80vh;
             border: 1px solid rgba(188, 19, 254, 0.3);
-            overflow-y: auto;
+            display: block !important;
+            visibility: visible !important;
         }
 
-        /* Testi più belli */
-        h1 { text-shadow: 0 0 10px var(--neon); font-size: 22px; }
+        /* RESET DELLE CLASSI ORIGINALI (Per togliere lo schifo bianco) */
+        .el-main, .el-container, .el-aside, .el-header {
+            background: transparent !important;
+            color: white !important;
+        }
+        
+        .el-button--primary {
+            background-color: var(--neon) !important;
+            border-color: var(--neon) !important;
+        }
+
+        /* SCIA DI PARTICELLE */
+        .particle {
+            position: fixed;
+            width: 4px; height: 4px;
+            background: var(--cyber);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+        }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1>ONIKUA <span style="color:var(--cyber)">G67 PRO</span></h1>
-    <button id="connect-btn">🔌 CONNETTI TASTIERA</button>
+    <h1 style="margin:0; font-size:22px; text-shadow: 0 0 10px var(--neon);">
+        ONIKUA <span style="color:var(--cyber)">G67 PRO</span>
+    </h1>
+    <button id="connect-btn">🔌 SINCRONIZZA USB</button>
 </div>
 
 <div id="app">
-    <div style="text-align:center; padding-top:200px;">
-        <h2 style="color:var(--cyber)">SISTEMA PRONTO</h2>
-        <p>Clicca il tasto in alto per sincronizzare la tua G67 via USB</p>
+    <div id="loader-msg" style="text-align:center; padding-top:200px;">
+        <h2 style="color:var(--cyber)">INIZIALIZZAZIONE HARDWARE...</h2>
+        <p>Se vedi questa scritta, clicca il tasto in alto per attivare la tastiera.</p>
     </div>
 </div>
 
 <script>
-    // Funzione per attivare il popup di connessione USB (WebHID)
+    // 1. GESTIONE CONNESSIONE USB
     document.getElementById('connect-btn').onclick = async () => {
         try {
             const devices = await navigator.hid.requestDevice({ filters: [] });
             if (devices.length > 0) {
-                console.log("Dispositivo connesso!");
+                console.log("G67 Connessa con successo!");
+                document.getElementById('loader-msg').style.display = 'none';
             }
         } catch (error) {
-            console.log("Connessione annullata.");
+            console.log("Accesso USB negato o annullato.");
         }
     };
 
-    // Effetto "Sfondo che segue il mouse"
+    // 2. SFONDO REATTIVO AL MOUSE
     window.addEventListener('mousemove', e => {
         let x = (e.clientX / window.innerWidth) * 100;
         let y = (e.clientY / window.innerHeight) * 100;
-        document.body.style.background = `radial-gradient(circle at ${x}% ${y}%, #1a0b2e 0%, #050505 100%)`;
+        document.body.style.setProperty('--x', x + '%');
+        document.body.style.setProperty('--y', y + '%');
+        
+        // Creazione particelle al movimento
+        createParticle(e.clientX, e.clientY);
     });
+
+    function createParticle(x, y) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = x + 'px';
+        p.style.top = y + 'px';
+        document.body.appendChild(p);
+        
+        const anim = p.animate([
+            { transform: 'translate(0,0) scale(1)', opacity: 1 },
+            { transform: `translate(${(Math.random()-0.5)*50}px, 50px) scale(0)`, opacity: 0 }
+        ], { duration: 800 });
+        
+        anim.onfinish = () => p.remove();
+    }
+
+    // 3. AUTO-HIDE DEL LOADER SE GIÀ CONNESSO
+    setInterval(() => {
+        if (document.querySelector('.el-container')) {
+            const loader = document.getElementById('loader-msg');
+            if (loader) loader.style.display = 'none';
+        }
+    }, 1000);
 </script>
 
 </body>
