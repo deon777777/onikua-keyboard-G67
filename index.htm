@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>ONIKUA G67 PRO - Ultimate Edition</title>
+    <script defer src="https://onikua.driveall.cn/static/js/chunk-vendors.564e9835.js"></script>
+    <script defer src="https://onikua.driveall.cn/static/js/app.99da8688.js"></script>
+    <link href="https://onikua.driveall.cn/static/css/app.64dc58ad.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --neon: #bc13fe;
+            --cyber: #00ffff;
+            --bg: #050505;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            overflow: hidden;
+            /* Sfondo Live Animato */
+            background: radial-gradient(circle at center, #1a0b2e 0%, #050505 100%);
+        }
+
+        /* Effetto Nebula in movimento */
+        body::before {
+            content: "";
+            position: fixed;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: transparent url('https://www.transparenttextures.com/patterns/stardust.png') repeat;
+            animation: move-bg 120s linear infinite;
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        @keyframes move-bg {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px solid var(--neon);
+            box-shadow: 0 0 20px rgba(188, 19, 254, 0.4);
+        }
+
+        /* Pannello Principale Glassmorphism */
+        #app {
+            background: rgba(15, 15, 25, 0.7) !important;
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid rgba(188, 19, 254, 0.2);
+            margin: 20px;
+            height: 85vh;
+            overflow-y: auto;
+        }
+
+        /* Rendiamo i tasti della tastiera fluorescenti */
+        .key-item {
+            border: 1px solid var(--cyber) !important;
+            background: rgba(0, 255, 255, 0.1) !important;
+            transition: 0.3s !important;
+        }
+
+        .key-item:hover {
+            box-shadow: 0 0 15px var(--cyber) !important;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1 style="margin:0; font-size: 24px; text-shadow: 0 0 10px var(--neon);">
+        ONIKUA <span style="color:var(--cyber)">G67 PRO</span>
+    </h1>
+    <div id="status">🔵 SISTEMA ONLINE</div>
+</div>
+
+<div id="app">
+    <div style="display:flex; justify-content:center; align-items:center; height:100%; flex-direction:column;">
+        <div class="loader"></div>
+        <p style="color:var(--cyber); font-weight:bold;">SINCRONIZZAZIONE HARDWARE...</p>
+    </div>
+</div>
+
+<script>
+    // Funzione "Innovativa": Messaggi di sistema dinamici
+    const statusDiv = document.getElementById('status');
+    const messages = ["SINCRONIZZAZIONE...", "ANALISI LED...", "G67 RILEVATA", "PRONTO"];
+    let i = 0;
+    setInterval(() => {
+        if(i < messages.length) statusDiv.innerText = "📡 " + messages[i++];
+    }, 2000);
+</script>
+
+</body>
+</html>
