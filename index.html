@@ -2,8 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ONIKUA G67 PRO - Ultimate Edition</title>
+    <title>ONIKUA G67 PRO - GOD MODE</title>
     
     <script defer src="https://onikua.driveall.cn/static/js/chunk-vendors.564e9835.js"></script>
     <script defer src="https://onikua.driveall.cn/static/js/app.99da8688.js"></script>
@@ -19,140 +18,164 @@
         body {
             background-color: var(--bg);
             color: white;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Orbitron', sans-serif;
             margin: 0;
-            overflow-x: hidden;
-            /* Sfondo Live che reagisce al mouse */
+            overflow: hidden;
             background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), #1a0b2e 0%, #050505 100%);
-            min-height: 100vh;
+            height: 100vh;
+            transition: filter 0.1s ease;
         }
 
-        /* HEADER CYBERPUNK */
+        /* HEADER E PULSANTI */
         .header {
             padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 2px solid var(--neon);
-            background: rgba(0,0,0,0.8);
-            box-shadow: 0 0 20px rgba(188, 19, 254, 0.5);
-            position: sticky;
-            top: 0;
-            z-index: 9999;
+            background: rgba(0,0,0,0.9);
+            box-shadow: 0 0 30px var(--neon);
+            z-index: 10000;
+            position: relative;
         }
 
-        #connect-btn {
-            padding: 12px 25px;
-            background: var(--cyber);
-            color: black;
-            border: none;
+        .btn-cyber {
+            padding: 12px 20px;
+            background: transparent;
+            color: var(--cyber);
+            border: 2px solid var(--cyber);
             border-radius: 5px;
-            font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 0 15px var(--cyber);
+            font-weight: bold;
+            text-transform: uppercase;
+            box-shadow: 0 0 10px var(--cyber);
             transition: 0.3s;
         }
 
-        #connect-btn:hover {
-            transform: scale(1.1);
-            filter: brightness(1.2);
+        .btn-cyber:hover {
+            background: var(--cyber);
+            color: black;
+            box-shadow: 0 0 25px var(--cyber);
         }
 
-        /* CONTENITORE APP (Forza la visibilità dei menu Onikua) */
+        /* PANNELLO TRASPARENTE PER L'APP */
         #app {
-            background: rgba(15, 15, 25, 0.6) !important;
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
+            background: rgba(15, 15, 25, 0.4) !important;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(188, 19, 254, 0.2);
             margin: 20px;
-            min-height: 80vh;
-            border: 1px solid rgba(188, 19, 254, 0.3);
+            height: 80vh;
+            border-radius: 15px;
+            overflow-y: auto;
             display: block !important;
-            visibility: visible !important;
         }
 
-        /* RESET DELLE CLASSI ORIGINALI (Per togliere lo schifo bianco) */
-        .el-main, .el-container, .el-aside, .el-header {
-            background: transparent !important;
-            color: white !important;
-        }
-        
-        .el-button--primary {
-            background-color: var(--neon) !important;
-            border-color: var(--neon) !important;
+        /* AUDIO VISUALIZER (Bordi che pulsano) */
+        .visualizer-glow {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            box-shadow: inset 0 0 0px var(--neon);
+            z-index: 9999;
+            transition: box-shadow 0.05s ease;
         }
 
-        /* SCIA DI PARTICELLE */
+        /* PARTICELLE */
         .particle {
             position: fixed;
-            width: 4px; height: 4px;
+            width: 3px; height: 3px;
             background: var(--cyber);
             border-radius: 50%;
             pointer-events: none;
-            z-index: 9999;
+            z-index: 10001;
         }
+
+        /* PULIZIA INTERFACCIA ORIGINALE */
+        .el-main, .el-container { background: transparent !important; }
+        .el-aside { border-right: 1px solid var(--neon) !important; }
     </style>
 </head>
-<body>
+<body onclick="initAudio()">
+
+<div class="visualizer-glow" id="glow"></div>
 
 <div class="header">
-    <h1 style="margin:0; font-size:22px; text-shadow: 0 0 10px var(--neon);">
-        ONIKUA <span style="color:var(--cyber)">G67 PRO</span>
-    </h1>
-    <button id="connect-btn">🔌 SINCRONIZZA USB</button>
+    <h1>ONIKUA <span style="color:var(--cyber)">G67 PRO</span> <small style="font-size:10px; color:var(--neon)">GOD MODE</small></h1>
+    <div>
+        <button class="btn-cyber" onclick="connectHID()">🔌 COLLEGA USB</button>
+        <button class="btn-cyber" style="border-color:var(--neon); color:var(--neon); margin-left:10px;" onclick="location.reload()">🔄 REFRESH</button>
+    </div>
 </div>
 
 <div id="app">
-    <div id="loader-msg" style="text-align:center; padding-top:200px;">
-        <h2 style="color:var(--cyber)">INIZIALIZZAZIONE HARDWARE...</h2>
-        <p>Se vedi questa scritta, clicca il tasto in alto per attivare la tastiera.</p>
+    <div id="status" style="text-align:center; padding-top:100px;">
+        <h2 style="color:var(--cyber)">SISTEMA IN ATTESA</h2>
+        <p>Muovi il mouse per le particelle. Clicca ovunque per attivare la reattività audio.</p>
     </div>
 </div>
 
 <script>
-    // 1. GESTIONE CONNESSIONE USB
-    document.getElementById('connect-btn').onclick = async () => {
+    // 1. CONNESSIONE USB
+    async function connectHID() {
         try {
-            const devices = await navigator.hid.requestDevice({ filters: [] });
-            if (devices.length > 0) {
-                console.log("G67 Connessa con successo!");
-                document.getElementById('loader-msg').style.display = 'none';
-            }
-        } catch (error) {
-            console.log("Accesso USB negato o annullato.");
-        }
-    };
+            await navigator.hid.requestDevice({ filters: [] });
+            document.getElementById('status').style.display = 'none';
+        } catch (e) { console.log("Connessione annullata"); }
+    }
 
-    // 2. SFONDO REATTIVO AL MOUSE
+    // 2. AUDIO REATTIVO (Pulsazione bordi e colori)
+    let audioCtx, analyser, dataArray;
+    async function initAudio() {
+        if (audioCtx) return;
+        try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const source = audioCtx.createMediaStreamSource(stream);
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 64;
+            source.connect(analyser);
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+            updateVisuals();
+        } catch (err) { console.log("Microfono non autorizzato"); }
+    }
+
+    function updateVisuals() {
+        requestAnimationFrame(updateVisuals);
+        analyser.getByteFrequencyData(dataArray);
+        let volume = dataArray.reduce((a, b) => a + b) / dataArray.length;
+        
+        // Fa pulsare l'ombra interna
+        document.getElementById('glow').style.boxShadow = `inset 0 0 ${volume * 1.5}px var(--neon)`;
+        // Cambia leggermente la tonalità in base al volume
+        document.body.style.filter = `hue-rotate(${volume/4}deg)`;
+    }
+
+    // 3. MOVIMENTO MOUSE E PARTICELLE
     window.addEventListener('mousemove', e => {
         let x = (e.clientX / window.innerWidth) * 100;
         let y = (e.clientY / window.innerHeight) * 100;
         document.body.style.setProperty('--x', x + '%');
         document.body.style.setProperty('--y', y + '%');
         
-        // Creazione particelle al movimento
         createParticle(e.clientX, e.clientY);
     });
 
     function createParticle(x, y) {
         const p = document.createElement('div');
         p.className = 'particle';
-        p.style.left = x + 'px';
-        p.style.top = y + 'px';
+        p.style.left = x + 'px'; p.style.top = y + 'px';
         document.body.appendChild(p);
         
-        const anim = p.animate([
-            { transform: 'translate(0,0) scale(1)', opacity: 1 },
-            { transform: `translate(${(Math.random()-0.5)*50}px, 50px) scale(0)`, opacity: 0 }
-        ], { duration: 800 });
-        
-        anim.onfinish = () => p.remove();
+        p.animate([
+            { transform: 'scale(1)', opacity: 1 },
+            { transform: `translate(${(Math.random()-0.5)*100}px, 50px) scale(0)`, opacity: 0 }
+        ], { duration: 1000 }).onfinish = () => p.remove();
     }
 
-    // 3. AUTO-HIDE DEL LOADER SE GIÀ CONNESSO
+    // Auto-rimozione messaggio se Onikua carica
     setInterval(() => {
         if (document.querySelector('.el-container')) {
-            const loader = document.getElementById('loader-msg');
-            if (loader) loader.style.display = 'none';
+            document.getElementById('status').style.display = 'none';
         }
     }, 1000);
 </script>
